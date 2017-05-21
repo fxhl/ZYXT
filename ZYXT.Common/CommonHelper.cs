@@ -10,11 +10,21 @@ namespace ZYXT.Common
 {
     public class CommonHelper
     {
+        /// <summary>
+        /// 计算字符串MD5值
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static string CalcMD5( string str)
         {
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(str);
             return CalcMD5(bytes);
         }
+        /// <summary>
+        /// 计算二进制文件MD5值
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static string CalcMD5(byte[] bytes)
         {
             using (MD5 md5 = MD5.Create())
@@ -29,6 +39,11 @@ namespace ZYXT.Common
                 return result;
             }
         }
+        /// <summary>
+        /// 计算流的MD5值
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string CalcMD5(Stream stream)
         {
             using (MD5 md5 = MD5.Create())
@@ -42,6 +57,23 @@ namespace ZYXT.Common
                 }
                 return result;
             }
+        }
+        /// <summary>
+        /// 创建验证码
+        /// </summary>
+        /// <param name="len">验证码长度</param>
+        /// <returns></returns>
+        public static string GenerateCaptchaCode(int len)
+        {
+            char[] data = { 'a', 'c', 'd', 'e', 'f', 'g', 'k', 'm', 'p', 'r', 's', 't', 'w', 'x', 'y', '3', '4', '5', '7', '8' };
+            StringBuilder sbCode = new StringBuilder();
+            Random rand = new Random();
+            for (int i = 0; i < len; i++)
+            {
+                char ch = data[rand.Next(data.Length)];
+                sbCode.Append(ch);
+            }
+            return sbCode.ToString();
         }
     }
 }
