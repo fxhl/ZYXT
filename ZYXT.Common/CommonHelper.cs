@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,6 +76,34 @@ namespace ZYXT.Common
                 sbCode.Append(ch);
             }
             return sbCode.ToString();
+        }
+        /// <summary>
+        /// 向用户发送邮件
+        /// </summary>
+        /// <param name="toMail">要发送给谁的邮箱名</param>
+        /// <param name="MailName">自己邮箱的用户名</param>
+        /// <param name="MailPwd">自己邮箱的密码</param>
+        /// <param name="title">邮件标题</param>
+        /// <param name="content">邮件内容</param>
+        public static void SendMail(string toMail,string MailName,string MailPwd,string title,string content)
+        {
+            string smtpServer = ConfigurationManager.AppSettings["smtpMailServer"];
+            string smtpSendMail= ConfigurationManager.AppSettings["sendMail"];
+            if (string.IsNullOrEmpty(smtpServer)||string.IsNullOrEmpty(smtpSendMail))
+            {
+                throw new AggregateException("没有读取到配置文件的内容");
+            }         
+            using (MailMessage mailMessage = new MailMessage())
+            using (SmtpClient smtpClient = new SmtpClient(smtpServer))
+            {
+                mailMessage.To.Add(toMail);
+                //mailMessage.To.Add(接收邮箱 2);
+                mailMessage.Body = content;
+                mailMessage.From = new MailAddress(smtpSendMail);
+                mailMessage.Subject = title;
+                smtpClient.Credentials = new System.Net.NetworkCredential(MailName, MailPwd);// 如果启用了“客户端授权码”，要用授权码代替密码
+                smtpClient.Send(mailMessage);
+            }
         }
     }
 }
